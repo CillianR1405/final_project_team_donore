@@ -15,3 +15,34 @@ CREATE TABLE IF NOT EXISTS spotify_artists (
     name TEXT UNIQUE
 )
 """)
+
+cur.execute("""
+CREATE TABLE IF NOT EXISTS spotifyTracks (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+    artistId TEXT,
+    popularity INTEGER,
+    duration INTEGER,
+    albumTitle TEXT,
+    releaseDate TEXT,
+    FOREIGN KEY (artistId) REFERENCES spotifyArtists(id)
+)
+""")
+
+cur.execute("""
+CREATE TABLE IF NOT EXISTS itunesTracks (
+    trackId INTEGER PRIMARY KEY,
+    name TEXT,
+    artist TEXT,
+    genre TEXT,
+    releaseDate TEXT,
+    trackPrice REAL,
+    collectionPrice REAL,
+    duration INTEGER
+)
+""")
+
+conn.commit()
+conn.close()
+
+print("Created database")
