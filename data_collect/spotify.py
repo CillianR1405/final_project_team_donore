@@ -55,7 +55,7 @@ def store_spotify_by_genre(genre="jazz"):
 
 
        cur.execute(
-           "INSERT OR IGNORE INTO spotify_artists (id, name) VALUES (?, ?)",
+           "INSERT OR IGNORE INTO spotifyArtists (id, name) VALUES (?, ?)",
            (artist_id, artist_name)
        )
 
