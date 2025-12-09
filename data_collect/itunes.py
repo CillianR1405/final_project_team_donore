@@ -3,24 +3,26 @@ import sqlite3
 import os
 
 def connect_database():
-    base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    data_path = os.path.join(base, "music_database", "music.db")
-    return sqlite3.connect(data_path)
+    file_directory = os.path.dirname(os.path.abspath(__file__))
+    project_directory = os.path.dirname(file_directory)
+    db_folder = os.path.join(project_directory, "music_database")
+    os.makedirs(db_folder, exist_ok=True)
+    database_path = os.path.join(db_folder, "music.db")
+    return sqlite3.connect(database_path)
 
-def get_tracks(term="house", limit=25):
+def get_tracks(term="", limit=25):
     url = "https://itunes.apple.com/search"
     params = {
         "term": term,
         "entity": "song",
         "limit": limit
     }
-
     response = requests.get(url, params=params)
     response.raise_for_status()
     data = response.json()
     return data.get("results", [])
 
-def store_itunes_data(term="house"):
+def store_itunes_data(term=""):
     conn = connect_database()
     cur = conn.cursor()
     tracks = get_tracks(term=term, limit=25)
@@ -41,9 +43,9 @@ def store_itunes_data(term="house"):
 
         cur.execute(
             """
-            INSERT OR IGNORE INTO itunes_tracks
-                (track_id, name, artist, genre, release_date,
-                 track_price, collection_price, duration_ms)
+            INSERT OR IGNORE INTO itunesTracks
+                (trackId, name, artist, genre, releaseDate,
+                 trackPrice, collectionPrice, duration)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
@@ -58,13 +60,13 @@ def store_itunes_data(term="house"):
             )
         )
 
-        if cur.rowcount > 0:
+        if cur.rowcount == 1:
             new_tracks += 1
 
     conn.commit()
     conn.close()
 
 if __name__ == "__main__":
-    terms = ["house", "rap", "pop", "jazz"]
+    terms = ["house", "electronic", "rap", "pop", "jazz"]
     for term in terms:
         store_itunes_data(term)

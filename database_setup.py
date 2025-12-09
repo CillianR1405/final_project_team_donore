@@ -10,7 +10,7 @@ conn = sqlite3.connect(database_path)
 cur = conn.cursor()
 
 cur.execute("""
-CREATE TABLE IF NOT EXISTS spotify_artists (
+CREATE TABLE IF NOT EXISTS spotifyArtists (
     id TEXT PRIMARY KEY,
     name TEXT UNIQUE
 )
